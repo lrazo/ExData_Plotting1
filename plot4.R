@@ -1,0 +1,21 @@
+require(sqldf)
+plot4 <- function(filename = "household_power_consumption.txt"){
+    df <- read.csv.sql(fileName, "select * from file where Date = '1/2/2007' or Date = '2/2/2007' ", sep = ";", header = T)
+    df <- within(df,{timestamp=strptime(paste(Date,Time,sep = " "),format = "%d/%m/%Y %H:%M:%S")})
+    png(filename = "plot4.png")
+    par(mfrow = c(2, 2), mar = c(4, 4, 2, 1), oma = c(0, 0, 2, 0))
+    with(df, {
+        plot(timestamp, Global_active_power, type = "n", ylab = "Global Active Power (kilowatts)", xlab = "")
+        lines(timestamp, Global_active_power)
+        plot(timestamp, Voltage, type = "n", ylab = "Voltage", xlab = "datetime")
+        lines(timestamp, Voltage)
+        plot(timestamp, Sub_metering_1, type="n", ylab = "Energy sub metering", xlab = "" )
+        lines(timestamp, Sub_metering_1, col = "black")
+        lines(timestamp, Sub_metering_2, col = "red")
+        lines(timestamp, Sub_metering_3, col = "blue")
+        legend("topright", col = c("black", "red", "blue"), legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"), lty = c(1,1,1), bty = "n")    
+        plot(timestamp, Global_reactive_power, type = "n", ylab = "Global_reactive_power", xlab = "datetime")
+        lines(timestamp, Global_reactive_power)
+    })
+    dev.off()
+}
